@@ -1,0 +1,423 @@
+using System;
+public class BlackJack 
+{
+    static int playercards = 2;
+    static int dealercards = 2;
+    static int ptotal = 0;
+    static int dtotal = 0;
+    static string [] dalphacards;
+    static string [] palphacards;
+    static string [] alphacards;
+    static int [] dcards;
+    static int [] pcards;
+        
+    bool boughtinsurnace = false;
+    
+    static void Main() 
+    {
+        int caseselection = 0;
+        int bet = 0;
+        int cash = 500;
+        caseselection = MENU();
+        while (caseselection >= 0 && caseselection <= 6)
+        {
+            switch (caseselection)
+            {
+                case 1: { cash = PLACEYOURBET(cash);                                        break; } // Closes PLACEYOURBET
+                case 2: { bet  = DEALNEWHAND();                                             break; } // Closes DEALNEWHAND
+                case 3: { bet  = HITME( bet, cash);                                         break; } // CLOSES HITME
+                case 4: { bet  = STAY( cash, bet, pcards);                                  break; } // CLOSES STAY
+                case 5: { cash = GOTOATM(cash);                                             break; } // CLOSES GOTOATM 
+                case 6: { Console.WriteLine(" D O N E  P L A Y I N G  B L A C K J A C K");  break; } // CLOSES EXIT
+            }  // CLOSES SWITCH
+        caseselection = MENU();
+        } //CLOSES WHILE
+    } //CLOSES MAIN
+  
+    static int MENU()
+    {
+        int caseselection = 0;
+        while (caseselection >= 0 && caseselection <= 6)
+        {
+            Console.WriteLine(" ");
+            Console.WriteLine(" 1. PLACE YOUR BET ");
+            Console.WriteLine(" 2. DEAL NEW HAND ");      
+            Console.WriteLine(" 3. HIT ME ");
+            Console.WriteLine(" 4. STAY ");
+            Console.WriteLine(" 5. GOTO ATM ");
+            Console.WriteLine(" 6. EXIT ");
+            Console.WriteLine(" Please make your selection. ");
+            caseselection = Convert.ToInt32(Console.ReadLine());
+            return (caseselection);
+        }
+        return 0;
+    } // CLOSES MENU
+  
+    //*******************PLACE YOUR BET*********************
+    static int PLACEYOURBET(int cash)
+    {
+        int bet = 0;
+        Console.WriteLine(" P L A C E  Y O U R  B E T ");
+        Console.WriteLine(" You Have " + cash + " dollars in cash "); 
+        while (bet == 0 && cash >= 0)
+        {
+            Console.WriteLine(" How much do you want to bet? " );
+            bet = Convert.ToInt32(Console.ReadLine());
+            if (cash <= 0 || bet > cash)
+            {
+                Console.WriteLine(" You are out of money "); 
+                Console.WriteLine(" Please withdraw more money from the ATM ");
+                cash = GOTOATM(cash);
+                bet = 0;
+            } // CLOSES FIRST IF STATEMENT
+        
+            if (cash < 30)
+            {
+                Console.WriteLine(" You are running out of money ");
+                Console.WriteLine(" You Have " + cash + "dollars in cash "); 
+            } // CLOSES SECOND IF STATEMENT
+        
+            if (bet > cash) // BET IS MORE THAN CASH ON HAND 
+            {
+                Console.WriteLine(" You cannot bet " + bet + " dollars because you only have " + cash + " dollars left ");
+            } // CLOSES THIRD IF STATEMENT
+        
+            if (cash >= bet) // SUFFICIENT FUNDS TO BET
+            {
+                cash -= bet;
+                Console.WriteLine(" Your bet is " + bet + " and you have " + cash + " dollars left. "); 
+            } // CLOSES FOURTH IF STATEMENT 
+        
+        } // CLOSES PLACEYOURBET WHILE LOOP
+        return (cash);
+    } // CLOSES PLACE YOUR BET
+
+    //*******************DEAL NEW HAND********************* 
+    static int DEALNEWHAND()
+    {
+        int i = 0;
+        playercards = 2;
+        dalphacards = new string[14];
+        palphacards = new string[14];
+        alphacards  = new string[14];
+        dcards      = new int[14];
+        pcards      = new int[14];
+        Random rnd  = new Random();
+        for (i = 0; i <= 13; i++)
+        {
+            pcards[i]      = 0;
+            dcards[i]      = 0;
+            palphacards[i] = " ";
+            dalphacards[i] = " ";
+         // alphacards[i]   = " ";  Delete this line
+        } // CLOSES FIRST FOR LOOP
+        for (i = 1; i <= 2; i++)
+        {
+            int card = rnd.Next(1, 14);
+            pcards[i] = card;
+            palphacards[i] = card.ToString();
+            card = rnd.Next(1, 14);
+            dcards[i] = card;
+            dalphacards[i] = card.ToString();
+        } // CLOSES SECOND FOR LOOP
+        dcards[0] = 0; // IDENTIFIES THAT THIS IS THE DEALER ARRAY
+        pcards[0] = 1; // IDENTIFIES THAT THIS IS THE PLAYER ARRAY
+        alphathecards(ref palphacards);
+        alphathecards(ref dalphacards);
+        ptotal = calctotal(pcards);
+        dtotal = calctotal(dcards);
+        checkforbj(dcards); //CHECKS FOR DEALER BLACKJACK 
+        Console.WriteLine(" Dealer has a " + dalphacards[1] + " and an X ");
+        Console.WriteLine(" Dealer has a " + dalphacards[1] + " showing ");
+        checkforbj(pcards); //CHECKS FOR PLAYER BLACKJACK 
+        if (ptotal < 21) 
+        {
+            CHECKFORACE(pcards);
+        }
+        Console.WriteLine(" Player has a " + palphacards[1] + " and a " + palphacards[2]);
+        Console.WriteLine(" Player has a " + ptotal + " showing");
+        return 0;
+    } // CLOSES DEAL NEW HAND
+
+    //*******************HIT ME********************* 
+    static int HITME( int bet, int cash )
+    {
+        int j;
+        playercards++;
+        Random rnd = new Random();
+        int newcard = rnd.Next(1, 14);
+        pcards[playercards] = newcard;
+        palphacards[playercards] = newcard.ToString();
+        alphathecards(ref palphacards);
+        ptotal = calctotal(pcards);
+        Console.WriteLine(" Dealer has a " + dalphacards[1] + " and an X ");
+        Console.WriteLine(" Dealer has a " + dalphacards[1] + " showing ");
+        Console.WriteLine(" Player has "   + playercards    + " cards ");
+        Console.Write(" Player has a " + palphacards[1]);
+        for (j = 2; j <= playercards; ++j)
+        {
+            if (j <= playercards)
+            {
+                Console.Write(" and a ");
+            } // CLOSES IF FIRST STATEMENT               
+            Console.Write(palphacards[j]);
+        } // CLOSES FIRST FOR LOOP
+        Console.WriteLine(" ");
+        for ( int k = 1; k <= playercards; k++ )
+        {
+            if (pcards[k] == 1 || pcards[k] == 14)
+            {
+                CHECKFORACE(pcards);
+                k = 10;
+            } // CLOSES SECOND IF STATEMENT
+        } //CLOSES SECOND FOR LOOP
+         Console.WriteLine(" Player has " + ptotal + " showing ");
+        if (ptotal > 21)
+        {
+            LOSE(); 
+        } // CLOSES THIRD STATEMENT
+        //else
+        //if (dtotal < 21)
+        //{
+        //    WIN(); 
+        //    cash += bet * 2; 
+        //} // CLOSES FOURTH IF STATEMENT 
+        return(cash);
+    } // CLOSES HIT ME
+  
+    //*******************STAY********************* 
+    static int STAY(int cash, int bet, int [] pcards)
+    {
+        Console.WriteLine(" Dealer has a " + dalphacards[1] + " and a " + dalphacards[2]);
+        Console.WriteLine(" Dealer has " + dtotal +  " showing ");
+        if (dtotal >= ptotal)
+        {
+            Console.WriteLine(" Dealer rules! ");
+            LOSE();
+        } // CLOSES FIRST IF STATEMENT
+        else
+        if((dtotal > 16) && (ptotal > dtotal ))
+        {
+            WIN();
+            cash += bet * 2;
+        } // CLOSES FIRST ELSE IF STATEMENT
+        else
+        {
+            while (dtotal <= 16)
+            {
+                for (int d = 1; d <= dealercards; d++)
+                {
+                    if (dcards[d] == 1)
+                    {
+                        if ((dtotal + 10) <= 21 && (dtotal + 10) > 16)
+                        {
+                            dtotal += 10;
+                        } // CLOSES SECOND IF STATEMENT
+                    } // CLOSES FIRST IF STATEMENT
+                    else 
+                    {
+                        if (dtotal < 17 )
+                        {
+                            dealercards ++;
+                            Random rnd = new Random();
+                            int newcard = rnd.Next(1, 14);
+                            dcards[dealercards] = newcard;
+                            dalphacards[dealercards] = newcard.ToString();
+                            alphathecards(ref dalphacards);
+                            dtotal = calctotal(dcards);
+                            d = 0;
+                        } // CLOSES IF
+                    } // CLOSES SECOND ELSE STATEMENT
+                } // CLOSES FOR LOOP
+                Console.WriteLine(" Dealer has " + dealercards + " cards");
+                Console.Write(" Dealer has a " + dalphacards[1]);
+                for (int j = 2; j <= dealercards; ++j)
+                {
+                    if (j <= dealercards)
+                        {
+                            Console.Write(" and a ");
+                        } // CLOSES IF FIRST STATEMENT               
+                        Console.Write(dalphacards[j]);
+                } // CLOSES FIRST FOR LOOP
+                Console.WriteLine(" ");
+            } // CLOSES FIRST WHILE LOOP
+            Console.WriteLine("");
+            Console.WriteLine(" Dealer has " + dtotal + " showing ");
+            
+            if ((dtotal > 21) || (ptotal > dtotal))
+            {
+                WIN();
+                cash += bet * 2;
+            } // CLOSES FIRST IF STATEMENT
+            
+            if ((dtotal < 22) && (dtotal >= ptotal))
+            {
+                Console.WriteLine(" Dealer rules! "); 
+                LOSE();
+            } // CLOSES SECOND IF STATEMENT
+        } // CLOSE ELSE STATEMENT
+      
+    return (bet);
+    } // CLOSES STAY
+  
+    //*******************GOTO ATM********************* 
+    static int GOTOATM(int cash)
+    {
+        Console.WriteLine(" How much do you want to withdraw? ");
+        int withdrawal = 0;
+        withdrawal = Convert.ToInt32(Console.ReadLine());
+        cash += withdrawal;
+        Console.WriteLine(" You now have " + cash + " dollars left ");
+        return (cash);
+    } // CLOSES GOTO ATM
+    //*******************CALCTOTAL*********************   
+    static int calctotal (int [] cards)
+    {
+        int i=0 ;
+        int total = 0 ;
+        for (i = 1; i <= 13; ++i )
+        {
+            total += cards[i];
+            switch ( cards[i])
+            {
+                case 11: { total -= 1; break; }
+                case 12: { total -= 2; break; }
+                case 13: { total -= 3; break; }
+            }// CLOSES SWITCH
+        }// CLOSES FOR LOOP
+        return(total);
+    }// CLOSES CALCTOTAL
+  
+    //*********A L P H A  T H E  C A E D S**************
+    static void alphathecards (ref string [] cards)
+    {
+        int i;
+        for (i = 1; i<= 13; i++)
+        {
+            switch(cards[i])
+            {
+                case "1"  : { cards[i] = "Ace";   break; }
+                case "11" : { cards[i] = "Jack";  break; }
+                case "12" : { cards[i] = "Queen"; break; }
+                case "13" : { cards[i] = "King";  break; }
+            }// CLOSES SWITCH
+        } //CLOSES ALPHATHECARDS FOR LOOP
+    } // CLOSES ALPHATHECARDS
+  
+    // ****************C H E C K  F O R  B L A C K J A C K  F U N C T I O N ****************
+    static void checkforbj (int [] cards)
+    {
+        if (((cards[1] == 1 || cards[1] == 14) && (cards[2] > 9 && cards[2] < 14))|| 
+            ((cards[2] == 1 || cards[2] == 14) && (cards[1] > 9 && cards[1] < 14)))
+        {
+            if (cards[0] == 1)
+            {
+                Console.WriteLine(" Player has BLACKJACK! ");
+                ptotal = 21;
+                Console.WriteLine(" Player has a " + palphacards[1] + " and a " + palphacards[2]);
+                Console.WriteLine(" Player has a " + ptotal + " showing ");
+                //cash += bet * 4;
+                //Console.WriteLine(" You now have " + cash + " dollars ");
+                WIN();
+            } // CLOSES FIRST IF STATEMENT IN CHECkFORBJ
+        }// CLOSES SECOND IF STATEMENT IN CHECkFORBJ
+        if (cards[1] == 1 || cards[1] == 14 )
+        {
+            // insurance(); CALLS Insurance FUNCTION 
+        }
+        if (((cards[1] == 1 || cards[1] == 14) && (cards[2] > 9 && cards[2] < 14))|| 
+            ((cards[2] == 1 || cards[2] == 14) && (cards[1] > 9 && cards[1] < 14)))
+        {
+            if(cards[0] == 0)
+            {
+                Console.WriteLine(" Dealer has BLACKJACK! ");
+                //if (boughtinsurnace == false )
+                //{
+                //  cash -= bet;
+                //}
+                //Console.WriteLine(" You now have " + cash + " dollars ");
+                LOSE(); 
+                //DEALNEWHAND();
+            }
+        } // CLOSES Second IF STATEMENT IN CHECkFORBJ
+    } // CLOSES CHECKFORBJ */
+  
+    //*********C H E C K  F O R  A C E  F U N C T I O N**************
+    static int CHECKFORACE (int [] pcards)
+    {
+        int i;
+        int acevalue = 0;
+        if ((pcards[1] == 1 && pcards[2] > 9) || (pcards[2] == 1 && pcards[2] > 9))
+        {
+            ptotal = 21;
+            return 0;
+        } // CLOSES FIRST IF STATEMENT FOR CHECKFORACE
+        for (i = 1; i < 13; i++)
+        {
+            switch (pcards[i])
+            {
+                case 1: 
+                {
+                    Console.WriteLine(" You now have " + ptotal + " or " + (ptotal + 10));
+                    Console.WriteLine(" Do you want to use the ACE as a 1 or an 11 ");
+                    while (acevalue != 1 && acevalue != 11)
+                    {
+                        Console.WriteLine(" Enter a 1 or 11 ");
+                        acevalue = Convert.ToInt32(Console.ReadLine());
+                    } // CLOSES WHILE LOOP FOR CHECKFORACE
+                     if (acevalue == 11)
+                    {
+                        ptotal += 10;
+                    }
+                    acevalue = 0;
+                    break;
+                }// CLOSES CASE STATEMENT FOR CHECKFORACE
+            } // CLOSES SWITCH STATEMENT FOR CHECKFORACE
+        } // CLOSES FOR LOOP FOR CHECKFORACE
+        return 0;
+    } // CLOSES CHECKFORACE 
+  
+    //*********************WIN FUNCTION*******************
+    static void WIN()
+    {
+        int number;
+        Random rnd = new Random();
+        number = rnd.Next(1, 5);
+        switch(number)
+        {
+            case 1 : { Console.WriteLine(" CONGRATULATIONS! YOU ARE A WINNER !!");     break; }
+            case 2 : { Console.WriteLine(" YOU WIN. YOUR SCORE BEATS THE DEALER'S");   break; }
+            case 3 : { Console.WriteLine(" GREAT JOB! YOU WIN");                       break; }
+            case 4 : { Console.WriteLine(" WAY TO GO BUDDY. THE MONEY IS ALL YOURS!"); break; }
+            default : { break;}
+        }// CLOSES SWITCH
+    }// CLOSES WIN FUNCTION
+    
+    //*********************LOSE FUNCTION*******************
+    static void LOSE()
+    {
+        int number;
+        Random rnd = new Random();
+        number = rnd.Next(1, 5);
+        switch(number)
+        {
+            case 1 : { Console.WriteLine(" SORRY, YOU ARE BUSTED. THE DEALER WINS ");   break; }
+            case 2 : { Console.WriteLine(" THE DEALER WINS. BETTER LUCK NEXT TIME !");  break; }
+            case 3 : { Console.WriteLine(" YOU LOSE. DEALER WINS! ");                   break; }
+            case 4 : { Console.WriteLine(" SORRY BUDDY. THE DEALER WINS!");             break; }
+            default :{ break;  }
+        }// CLOSES SWITCH
+    }// CLOSES LOSE FUNCTION*/
+} // CLOSES BLACKJACK
+
+
+
+
+
+
+
+
+
+
+
+
