@@ -1,0 +1,139 @@
+using System;
+class Nickelback 
+{
+    static void Main() 
+    {
+        double fiftys       = 0;
+        double twentys      = 0;
+        double tens         = 0;
+        double fives        = 0;
+        double twos         = 0;
+        double ones         = 0;
+        double fiftycents   = 0;
+        double quartercs    = 0;
+        double dimes        = 0;
+        double nickels      = 0;
+        double pennies      = 0;
+        double amt_due      = 0;
+        double amt_paid     = 0;
+        double change       = 0;
+        double print_change = 0;
+        Console.WriteLine("How much is the Bill? ");
+        amt_due = Convert.ToDouble(Console.ReadLine());
+        // The reason we use Convert.ToDouble is the ReadLine
+        // Fuction reads console input as a string and it needs
+        // to be converted into a number so we can do math with it
+        Console.WriteLine("How much are you paying? ");
+        amt_paid = Convert.ToDouble(Console.ReadLine());
+        while (amt_paid < amt_due)
+            {
+                Console.WriteLine("That is not enough money! ");
+                Console.WriteLine("You spent " + amt_due.ToString("C") + "and only paid " + amt_paid.ToString("C"));
+                Console.WriteLine("Please pay at least " + amt_due.ToString("C"));
+                amt_paid = Convert.ToDouble(Console.ReadLine());
+            }
+        change = amt_paid - amt_due;
+        print_change = change;
+        if (change >= 50)
+            {
+                ++fiftys;
+                change -= 50;
+            }
+        while (change >= 20)
+            {
+                ++twentys;
+                change -= 20;
+            }
+        if (change >= 10)
+            {
+                ++tens;
+                change -= 10;
+            }
+        if (change >= 5)
+            {
+                ++fives;
+                change -= 5;
+            }
+        while (change >= 2)
+            {
+                ++twos;
+                change -= 2;
+            }
+        if (change >= 1)
+            {
+                ++ones;
+                change -= 1;
+            }
+        if (change >= 0.5)
+            {
+                ++fiftycents;
+                change -= 0.5;
+            }
+        if (change >= 0.25)
+            {
+                ++quartercs;
+                change -= 0.25;
+            }
+        while (change >= 0.1)
+            {
+                ++dimes;
+                change -= 0.1;
+            }
+        if (change >= 0.05)
+            {
+                ++nickels;
+                change -= 0.05;
+            }
+        while (change >= 0.009)
+            {
+                ++pennies;
+                change -= 0.01;
+            }
+        Console.WriteLine("You spent " + amt_due.ToString("C") + " and paid " + amt_paid.ToString("C") );
+        Console.WriteLine("Your change is " + print_change.ToString("C"));
+        if (fiftys >= 1)
+        {
+            Console.WriteLine("You get back " + fiftys + " fiftys");
+        }
+        if (twentys >= 1)
+        {
+            Console.WriteLine("You get back " + twentys + " twentys");
+        }
+        if (tens >= 1)
+        {
+            Console.WriteLine("You get back " + tens + " tens");
+        }
+        if (fives >= 1)
+        {
+            Console.WriteLine("You get back " + fives + " fives");
+        }
+        if (twos >= 1)
+        {
+            Console.WriteLine("You get back " + twos + " twos");
+        }
+        if (ones >= 1)
+        {
+            Console.WriteLine("You get back " + ones + " ones");
+        }
+        if (fiftycents >= 1)
+        {
+            Console.WriteLine("You get back " + fiftycents + " fiftycents");
+        }
+        if (quartercs >= 1)
+        {
+            Console.WriteLine("You get back " + quartercs + " quartercs");
+        }
+        if (dimes >= 1)
+        {
+            Console.WriteLine("You get back " + dimes + " dimes");
+        }
+        if (nickels >= 1)
+        {
+            Console.WriteLine("You get back " + nickels + " nickels");
+        }
+        if (pennies >= 1)
+        {
+            Console.WriteLine("You get back " + pennies + " pennies");
+        }  
+    }
+}
