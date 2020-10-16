@@ -1,0 +1,77 @@
+import java.util.Scanner;
+
+public class Main
+{
+	public static void main(String[] args) 
+	{
+	    int    letter = 0;
+	    int    num    = 0;
+	    int    len    = 0;
+	    
+	    char   cha       ;
+	    
+	    String password  ;
+	    
+	    boolean tryagain = true;
+	    
+	    Scanner s = new Scanner(System.in);
+	    
+	    while(tryagain)
+	    {
+	        System.out.println("Setting your password: "                                   );
+	        System.out.println("Your password should consists of only letters and digits." );
+	        System.out.println("Your password must have "                                  );
+	        System.out.println("at least eight characters, and "                           );
+	        System.out.println("at least two digits. "                                     );
+	        System.out.println("Enter your password: "                                     );
+	        
+	        password =      s.nextLine();
+	        len      = password.length();
+	    
+	        for(int i = 0; i < len; i++)
+	        {
+	            cha = password.charAt(i);
+	       
+	            if( Character.isUpperCase(cha) || Character.isLowerCase(cha))
+	            {
+	                letter++;
+	                //(chech system) System.out.println(cha);
+	            }
+	            if( Character.isDigit(cha) )
+	            {
+	                num++;
+	                //(chech system) System.out.println(cha);
+	            }
+	        }// end for
+	    
+	         System.out.println(letter);
+	         System.out.println(num);
+	           
+		    if ((letter + num) > 8 && password.matches("[A-Za-z0-9]+") )
+		    {
+		        System.out.println("Set password successfully "     );
+		        System.out.println("Password is valid: " + password );
+		        tryagain = false;
+		    }
+		    else
+		    {
+		        System.out.println("Unsuccessful password setting ");
+		        
+		        if ((letter + num) < 8)
+    		    {
+    		        System.out.println("Your password must have at least eight characters "       );
+    		    }
+    		    if (num < 2)
+    		    {
+    		        System.out.println("Your password must have at least at least two digit "     );
+    		    }
+    		    if (!password.matches("[A-Za-z0-9]+") )
+    		    {
+    		        System.out.println("Your password should consists of only letters and digits ");
+    		    }
+    		    System.out.println();
+    		    System.out.println();
+		    }// end else
+	    }// end while
+	}// end class
+}// end main
